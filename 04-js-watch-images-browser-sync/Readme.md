@@ -151,6 +151,34 @@ gulp.task('images', () => {
 });
 ```
 
+###`gulp-newer`
+Плагин `gulp-newer` - пропускает через себя только те файлы, которых еще нет в конечной директории, таким образом экономя ресурсы и время на сборку.
+```sh
+$ npm i -D gulp-newer
+```
+Подключим и настроим:
+```js
+...
+const newer = require('gulp-newer');
+...
+
+// опишем задачу для gulp-newer
+gulp.task('images', () => {
+  gulp.src('src/images/*.*')
+    .pipe(newer('public/images'))
+    .pipe(debug({title: 'images'}))
+    .pipe(gulp.dest('public/images'))
+});
+
+// удалим из таска 'build' задачу 'clean'
+gulp.task('build', sequence(['style', 'images']));
+```
+Запустим сборку.
+
+###`gulp-remember` + `gulp-cached`
+[`gulp-remember`](https://www.npmjs.com/package/gulp-remember).
+[`gulp-cached`](https://www.npmjs.com/package/gulp-cached/)
+
 ###Вишенка на торте - `browser-sync`
 [`Browsersync`](https://www.browsersync.io/docs/gulp) - это очень мощный инструмент, для работы с браузером, синхронизации данных и автоматической перезагрузки страницы. Давайте посмотрим, как это работает.
 Установим плагин:
