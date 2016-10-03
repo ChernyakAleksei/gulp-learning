@@ -87,7 +87,7 @@ const eslint = require('gulp-eslint');
 
 // задача для проверки качества кода
 gulp.task('lint', () => {
-  gulp.src('src/js/l*.js')
+  gulp.src('src/js/*.js')
     // проверяем javascript
     .pipe(eslint())
     // выводим ошибки, если есть
