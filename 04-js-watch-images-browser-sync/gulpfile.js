@@ -31,3 +31,4 @@ gulp.task('clean', () => {
 });
 
 gulp.task('build', sequence('clean', ['style', 'images']));
+

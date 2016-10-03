@@ -1,4 +1,4 @@
-#Сборка javascript, `gulp.watch()`
+#Сборка javascript, `gulp.watch()`, работа с изображениями, `browser-sync`
 
 ###Сборка javascript
 Перейдем к javascript и напишем простую задачу для сборки javascript файлов. В папке `src/js/lib` находится библиотека `jquery`, а в папке `src/js` файлик с нашим javascript. Создадим задачу `js`:
@@ -131,3 +131,48 @@ gulp.task('js', () => {
     .pipe(gulp.dest('public/js'))
 });
 ```
+
+###Работа с изображениями
+Для работы с изображениями будем использовать плагин [`gulp-imagemin`](https://www.npmjs.com/package/gulp-imagemin). Давайте установим его и создадим задачу:
+```sh
+$ npm i -D gulp-imagemin
+```
+
+```js
+...
+const imagemin = require('gulp-imagemin');
+...
+
+// опишем задачу для обработки изображений
+gulp.task('images', () => {
+  gulp.src('src/images/*.*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('public/images'))
+});
+```
+
+###Вишенка на торте - `browser-sync`
+[`Browsersync`](https://www.browsersync.io/docs/gulp) - это очень мощный инструмент, для работы с браузером, синхронизации данных и автоматической перезагрузки страницы. Давайте посмотрим, как это работает.
+Установим плагин:
+```sh
+$ npm i -D browser-sync
+```
+Подключим и настроим:
+```js
+...
+const browserSync = require('browser-sync').create();
+...
+
+// опишем задачу для browserSync
+gulp.task('serve', () => {
+  browserSync.init({
+    server: 'public'
+  });
+
+  browserSync.watch('public/**/*.*').on('change', browserSync.reload);
+});
+
+// добавим ее в таск build
+gulp.task('build', sequence('clean', ['style', 'images', 'serve']));
+```
+Запустим.
