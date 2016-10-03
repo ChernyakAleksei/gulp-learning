@@ -214,7 +214,7 @@ gulp.task('style', () => {
 С настройками **autoprefixer** можно ознакомиться в официальном [репозитории](https://github.com/postcss/autoprefixer#options) или в репозитории [Browserslist](https://github.com/ai/browserslist#queries). Двигаемся дальше...
 
 ###Плагин `gulp-if`
-Бывает необходимость запускать те или иные потоки, в зависимости от тех или иных условий или задач разработки. В этом случае можно воспользоваться стандартным javascript условием `if/else`, но куда более элегантно можно решить данную проблему через плагин [`gulp-if`](https://www.npmjs.com/package/gulp-if/), в документации очень красиво показано, как строить цепочки преобразования, а мы остановимся на простой задаче. А именно, для разработки нам вовсе не нужно минифицировать файлы, а в свою очередь на продакш нам не нужны **sourcemaps**. Давайте попробуем решить данную проблему с помощью `gulp-if`.
+Бывает необходимость запускать те или иные потоки, в зависимости от тех или иных условий или задач разработки. В этом случае можно воспользоваться стандартным javascript условием `if/else`, но куда более элегантно можно решить данную проблему через плагин [`gulp-if`](https://www.npmjs.com/package/gulp-if/), в документации очень красиво показано, как строить цепочки преобразования, а мы остановимся на простой задаче. А именно, для разработки нам вовсе не нужно минифицировать файлы, а в свою очередь на продакш нам не нужны **sourcemaps** и еще, для девелопмента наш файл стилей будте называться `style.css`, а для продакшн - `style.min.css`. Давайте попробуем решить данную проблему с помощью `gulp-if`.
 Установка:
 ```sh
 $ npm i -D gulp-if
@@ -239,7 +239,7 @@ gulp.task('style', () => {
     .pipe(gulpIf(development, sourcemap.init()))
     .pipe(less())
     .pipe(autoprefixer({ browsers: 'last 5 versions' }))
-    .pipe(concat('style.css'))
+    .pipe(gulpIf(development, concat('style.css'), concat('style.min.css')))
     .pipe(gulpIf(!development, minifyCss()))
     .pipe(gulpIf(development, sourcemap.write()))
     .pipe(gulp.dest('public/css'))
@@ -296,7 +296,7 @@ const del = require('del');
 // задача которая будет удалять папки public/css и public/images
 // при повторной сборке
 gulp.task('clean', () => {
-  return del(['public/css', 'public/images']);
+  return del(['public/css', 'public/images']); // вернет промис
 });
 ```
 И наконец, воспользуемся еще одним плагином [gulp-sequence](https://www.npmjs.com/package/gulp-sequence) для организации всех задач в одну.
@@ -331,4 +331,4 @@ $ gulp build
 Важно заметить, порядок указания аргументов функции `sequence('clean', ['style', 'images'])`, сначала запускается задача `clean`, а затем, параллельно `style` и `images`. Более подробно об этом можно прочитать в документации к плагину.
 
 ###Плагин `gulp-debug`
-Простой плагин для отображения информации о процессе выполнения задач [`gulp-debug`](https://www.npmjs.com/package/gulp-debug/)
+Простой плагин для отображения информации о процессе выполнения задач [`gulp-debug`](https://www.npmjs.com/package/gulp-debug/).
